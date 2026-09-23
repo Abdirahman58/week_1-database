@@ -1,0 +1,116 @@
+-- WEEK 1 DATABASE ASSIGNMENT
+-- Restaurant Management Database
+
+CREATE DATABASE restaurant_management;
+
+USE restaurant_management;
+
+-- Customers table
+CREATE TABLE customers (
+customer_id INT AUTO_INCREMENT PRIMARY KEY,
+first_name VARCHAR(50) NOT NULL,
+last_name VARCHAR(50) NOT NULL,
+phone VARCHAR(20),
+email VARCHAR(100)
+);
+
+-- Menu table
+CREATE TABLE menu_items (
+item_id INT AUTO_INCREMENT PRIMARY KEY,
+item_name VARCHAR(100) NOT NULL,
+category VARCHAR(50),
+price DECIMAL(10,2) NOT NULL
+);
+
+-- Orders table
+CREATE TABLE orders (
+order_id INT AUTO_INCREMENT PRIMARY KEY,
+customer_id INT NOT NULL,
+order_date DATE NOT NULL,
+FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
+);
+
+-- Order details table
+CREATE TABLE order_items (
+order_item_id INT AUTO_INCREMENT PRIMARY KEY,
+order_id INT NOT NULL,
+item_id INT NOT NULL,
+quantity INT NOT NULL,
+FOREIGN KEY (order_id) REFERENCES orders(order_id),
+FOREIGN KEY (item_id) REFERENCES menu_items(item_id)
+);
+
+-- Insert customers
+INSERT INTO customers (first_name, last_name, phone, email)
+VALUES
+('John', 'Kamau', '0712345678', 'john@gmail.com'),
+('Mary', 'Wanjiku', '0723456789', 'mary@gmail.com'),
+('David', 'Otieno', '0734567890', 'david@gmail.com');
+
+-- Insert menu items
+INSERT INTO menu_items (item_name, category, price)
+VALUES
+('Chicken Burger', 'Burger', 650.00),
+('Beef Pizza', 'Pizza', 1200.00),
+('French Fries', 'Sides', 300.00),
+('Chicken Wings', 'Starter', 750.00),
+('Fresh Juice', 'Drinks', 250.00);
+
+-- Insert orders
+INSERT INTO orders (customer_id, order_date)
+VALUES
+(1, '2026-09-20'),
+(2, '2026-09-21'),
+(3, '2026-09-22');
+
+-- Insert order items
+INSERT INTO order_items (order_id, item_id, quantity)
+VALUES
+(1, 1, 2),
+(1, 3, 1),
+(2, 2, 1),
+(2, 5, 2),
+(3, 4, 1);
+
+-- Display all customers
+SELECT * FROM customers;
+
+-- Display all menu items
+SELECT * FROM menu_items;
+
+-- Display all orders
+SELECT * FROM orders;
+
+-- Display customers and their orders
+SELECT
+customers.first_name,
+customers.last_name,
+orders.order_id,
+orders.order_date
+FROM customers
+JOIN orders
+ON customers.customer_id = orders.customer_id;
+
+-- Display order details
+SELECT
+order_items.order_id,
+menu_items.item_name,
+menu_items.price,
+order_items.quantity
+FROM order_items
+JOIN menu_items
+ON order_items.item_id = menu_items.item_id;
+
+-- Find menu items costing more than 500
+SELECT *
+FROM menu_items
+WHERE price > 500;
+
+-- Update a menu item price
+UPDATE menu_items
+SET price = 700.00
+WHERE item_id = 1;
+
+-- Delete an order item
+DELETE FROM order_items
+WHERE order_item_id = 5;
